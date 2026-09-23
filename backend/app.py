@@ -1,12 +1,8 @@
 import os
-import io
 import json
-import time
 from typing import List
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import pymupdf
-from PIL import Image
 from pydantic import BaseModel
 from google import genai
 from google.genai import types
@@ -17,7 +13,7 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# Allow requests from your Netlify domain and local t
+# Allow requests from your Netlify domain and local
 # CORS(app, resources={r"/*": {"origins": [
 #     "http://127.0.0.1:5000",
 #     "http://localhost:5000",
@@ -41,39 +37,6 @@ class CatalogData(BaseModel):
     catalog_date: str
     items: List[CatalogItem]
 
-def pdf_bytes_to_images(pdf_bytes: bytes):
-    images = []
-    doc = pymupdf.open(stream=pdf_bytes, filetype="pdf")
-    for page in doc:
-        pix = page.get_pixmap(matrix=pymupdf.Matrix(2.0, 2.0))
-        img = Image.open(io.BytesIO(pix.tobytes("png")))
-        images.append(img)
-    return images
-
-def extract_from_images(images):
-    prompt = (
-        "You are an expert AI extraction agent. Extract all catalog items, "
-        "categories, specifications, indicative prices, and units from this document."
-    )
-    for attempt in range(5):
-        try:
-            response = client.models.generate_content(
-                model='gemini-3.8-flash',
-                contents=images + [prompt],
-                config=types.GenerateContentConfig(
-                    response_mime_type="application/json",
-                    response_schema=CatalogData,
-                    temperature=0.1
-                )
-            )
-            return json.loads(response.text)
-        except Exception as e:
-            if "503" in str(e):
-                time.sleep(5)
-            else:
-                raise e
-    raise RuntimeError("API busy after 5 retry attempts.")
-
 @app.route("/upload", methods=["POST"])
 def upload():
     if "file" not in request.files:
@@ -84,11 +47,36 @@ def upload():
         return jsonify({"error": "Empty filename"}), 400
 
     try:
+        # 1. Read the entire PDF directly into memory
         pdf_bytes = file.read()
-        images = pdf_bytes_to_images(pdf_bytes)
-        extracted_data = extract_from_images(images)
+        
+        # 2. Package the raw PDF bytes as a single document part
+        pdf_part = types.Part.from_bytes(
+            data=pdf_bytes,
+            mime_type='application/pdf'
+        )
+        
+        prompt = (
+            "You are an expert AI extraction agent. Extract all catalog items, "
+            "categories, specifications, indicative prices, and units from this document."
+        )
+        
+        # 3. Send one single request to Gemini 3.8 Flash
+        response = client.models.generate_content(
+            model='gemini-3.8-flash',
+            contents=[pdf_part, prompt],
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+                response_schema=CatalogData,
+                temperature=0.1
+            )
+        )
+        
+        extracted_data = json.loads(response.text)
         return jsonify({"success": True, "data": extracted_data})
+        
     except Exception as e:
+        print(f"Extraction Error: {e}")
         return jsonify({"error": str(e)}), 500
 
 @app.route("/sync", methods=["POST"])
@@ -126,10 +114,10 @@ def sync_to_sheets():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-if __name__ == "__main__":
-    # Render requires binding to 0.0.0.0 for production
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-
 @app.route('/health', methods=['GET'])
 def health_check():
     return "OK", 200
+
+if __name__ == "__main__":
+    # Render requires binding to 0.0.0.0 for production
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

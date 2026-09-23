@@ -1,0 +1,9 @@
+flask
+flask-cors
+google-genai
+pymupdf
+pillow
+pydantic
+gspread
+python-dotenv
+gunicorn

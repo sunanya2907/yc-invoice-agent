@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DocuSync AI - SaaS Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+  <!-- ========================================== -->
+  <!-- 1. AUTHENTICATION SCREEN (Visible by default)-->
+  <!-- ========================================== -->
+  <div id="auth-section" class="flex min-h-screen items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 border border-slate-100">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-slate-800">DocuSync AI</h1>
+        <p class="text-slate-500 mt-2" id="auth-subtitle">Sign in to your workspace</p>
+      </div>
+
+      <form id="auth-form" class="space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+          <input type="email" id="email-input" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+          <input type="password" id="password-input" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition">
+        </div>
+        <div id="auth-error" class="hidden text-red-600 text-sm font-medium bg-red-50 p-3 rounded-lg"></div>
+        <button type="submit" id="auth-submit-btn" class="w-full py-2.5 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition shadow-sm">
+          Sign In
+        </button>
+      </form>
+
+      <div class="mt-6 text-center text-sm text-slate-600">
+        <span id="auth-toggle-text">Don't have an account?</span> 
+        <button id="toggle-auth-mode" class="text-indigo-600 font-semibold hover:underline">Sign Up</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 2. MAIN DASHBOARD (Hidden until logged in) -->
+  <!-- ========================================== -->
+  <div id="app-section" class="hidden max-w-6xl mx-auto py-10 px-4">
+    
+    <header class="mb-8 flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight text-slate-800">DocuSync AI Workspace</h1>
+        <p class="text-slate-500 text-sm mt-1">Logged in as: <span id="user-email-display" class="font-medium text-indigo-600"></span></p>
+      </div>
+      <button id="logout-btn" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg font-medium hover:bg-slate-50 transition">
+        Sign Out
+      </button>
+    </header>
+
+    <!-- Upload Box -->
+    <div id="dropZone" class="border-2 border-dashed border-slate-300 rounded-xl p-10 bg-white text-center cursor-pointer hover:border-indigo-500 transition-colors shadow-sm">
+      <input type="file" id="fileInput" accept="application/pdf" class="hidden" />
+      <div class="flex flex-col items-center">
+        <svg class="w-12 h-12 text-slate-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+        </svg>
+        <p class="text-base font-medium text-slate-700">Drag and drop your PDF catalog or invoice here</p>
+        <button type="button" class="mt-4 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg font-medium hover:bg-indigo-100 transition">Browse File</button>
+      </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading" class="hidden my-8 p-6 bg-indigo-50 rounded-xl border border-indigo-100 text-center">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-indigo-500 border-t-transparent mb-2"></div>
+      <p class="text-indigo-800 font-medium">Extracting structured records with AI...</p>
+    </div>
+
+    <!-- Extracted Preview Section -->
+    <div id="resultsSection" class="hidden mt-8 space-y-6">
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+        <div class="flex gap-4 flex-wrap text-sm">
+          <div><span class="text-slate-400 block text-xs uppercase font-bold">Document</span> <strong id="metaTitle"></strong></div>
+          <div class="border-l border-slate-200 pl-4"><span class="text-slate-400 block text-xs uppercase font-bold">Market</span> <strong id="metaMarket"></strong></div>
+        </div>
+        <button id="syncBtn" class="px-5 py-2.5 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition shadow-sm">
+          Push to Google Sheets
+        </button>
+      </div>
+
+      <div id="notification" class="hidden p-4 rounded-lg text-sm font-medium"></div>
+
+      <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+        <div class="overflow-x-auto max-h-[500px]">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50 text-slate-500 sticky top-0 border-b border-slate-200 uppercase text-xs">
+              <tr>
+                <th class="py-3 px-6">Category</th>
+                <th class="py-3 px-6">Material Specification</th>
+                <th class="py-3 px-6">Indicative Price</th>
+                <th class="py-3 px-6">Unit</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Embedded Google Sheet -->
+    <div id="sheetFrame" class="mt-8 bg-white p-2 rounded-xl border border-slate-200 shadow-sm h-[600px]">
+      <iframe src="https://docs.google.com/spreadsheets/d/105Hf4HTCDnEV2l_QvQc77f36i4Oum9eNxSyLxJ6Omqg/edit?rm=minimal#gid=0" class="w-full h-full rounded-lg border-0" title="Live Database"></iframe>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 3. FIREBASE & APP LOGIC -->
+  <!-- ========================================== -->
+  <script type="module">
+    // Import Firebase v10 Modular SDKs from CDN
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+    // TODO: REPLACE THIS WITH YOUR ACTUAL FIREBASE CONFIG
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // DOM Elements - Auth
+    const authSection = document.getElementById('auth-section');
+    const appSection = document.getElementById('app-section');
+    const authForm = document.getElementById('auth-form');
+    const toggleAuthMode = document.getElementById('toggle-auth-mode');
+    const authSubmitBtn = document.getElementById('auth-submit-btn');
+    const authSubtitle = document.getElementById('auth-subtitle');
+    const authToggleText = document.getElementById('auth-toggle-text');
+    const authError = document.getElementById('auth-error');
+    const emailInput = document.getElementById('email-input');
+    const passwordInput = document.getElementById('password-input');
+    const userEmailDisplay = document.getElementById('user-email-display');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    // DOM Elements - App
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const loading = document.getElementById('loading');
+    const resultsSection = document.getElementById('resultsSection');
+    const tableBody = document.getElementById('tableBody');
+    const syncBtn = document.getElementById('syncBtn');
+    const notification = document.getElementById('notification');
+
+    // Auth State Management
+    let isLoginMode = true;
+    let currentUser = null;
+    let currentData = null;
+
+    // Listen for Auth State Changes (Fires on load, login, and logout)
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        currentUser = user;
+        userEmailDisplay.textContent = user.email;
+        authSection.classList.add('hidden');
+        appSection.classList.remove('hidden');
+      } else {
+        currentUser = null;
+        authSection.classList.remove('hidden');
+        appSection.classList.add('hidden');
+      }
+    });
+
+    // Toggle Login/Signup UI
+    toggleAuthMode.addEventListener('click', () => {
+      isLoginMode = !isLoginMode;
+      authError.classList.add('hidden');
+      if (isLoginMode) {
+        authSubmitBtn.textContent = 'Sign In';
+        authSubtitle.textContent = 'Sign in to your workspace';
+        authToggleText.textContent = "Don't have an account?";
+        toggleAuthMode.textContent = 'Sign Up';
+      } else {
+        authSubmitBtn.textContent = 'Create Account';
+        authSubtitle.textContent = 'Register for a new workspace';
+        authToggleText.textContent = "Already have an account?";
+        toggleAuthMode.textContent = 'Sign In';
+      }
+    });
+
+    // Handle Form Submit (Login / Signup)
+    authForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      authError.classList.add('hidden');
+      authSubmitBtn.disabled = true;
+      authSubmitBtn.textContent = 'Processing...';
+
+      const email = emailInput.value;
+      const password = passwordInput.value;
+
+      try {
+        if (isLoginMode) {
+          await signInWithEmailAndPassword(auth, email, password);
+        } else {
+          await createUserWithEmailAndPassword(auth, email, password);
+        }
+      } catch (error) {
+        authError.textContent = error.message.replace('Firebase: ', '');
+        authError.classList.remove('hidden');
+      } finally {
+        authSubmitBtn.disabled = false;
+        authSubmitBtn.textContent = isLoginMode ? 'Sign In' : 'Create Account';
+      }
+    });
+
+    // Logout
+    logoutBtn.addEventListener('click', () => signOut(auth));
+
+    // ==========================================
+    // APP LOGIC (Upload & Sync)
+    // ==========================================
+    
+    // NOTE: Once backend is moved to Render, change these URLs to your live backend URL
+    // e.g., const API_BASE_URL = 'https://docu-sync-api.onrender.com';
+    const API_BASE_URL = 'http://127.0.0.1:5000'; 
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-indigo-500'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-indigo-500'));
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('border-indigo-500');
+      if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length) handleFile(fileInput.files[0]);
+    });
+
+    async function handleFile(file) {
+      if (file.type !== 'application/pdf') return alert('Please upload a PDF file.');
+      
+      const formData = new FormData();
+      formData.append('file', file);
+
+      loading.classList.remove('hidden');
+      resultsSection.classList.add('hidden');
+      notification.classList.add('hidden');
+
+      try {
+        const res = await fetch(`${API_BASE_URL}/upload`, { method: 'POST', body: formData });
+        const result = await res.json();
+
+        if (!result.success) throw new Error(result.error || 'Extraction failed');
+        
+        currentData = result.data;
+        renderResults(currentData);
+      } catch (err) {
+        alert('Error connecting to backend API: ' + err.message);
+      } finally {
+        loading.classList.add('hidden');
+      }
+    }
+
+    function renderResults(data) {
+      document.getElementById('metaTitle').textContent = data.document_title || '-';
+      document.getElementById('metaMarket').textContent = data.primary_reference_market || '-';
+      
+      tableBody.innerHTML = '';
+      data.items.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50 transition-colors';
+        tr.innerHTML = `
+          <td class="py-3 px-6 font-medium text-slate-700">${item.category || ''}</td>
+          <td class="py-3 px-6 text-slate-900">${item.material_specification || ''}</td>
+          <td class="py-3 px-6 font-mono font-semibold text-slate-800">${item.indicative_price || ''}</td>
+          <td class="py-3 px-6 text-slate-500">${item.unit || ''}</td>
+        `;
+        tableBody.appendChild(tr);
+      });
+      resultsSection.classList.remove('hidden');
+    }
+
+    syncBtn.addEventListener('click', async () => {
+      if (!currentData) return;
+      syncBtn.disabled = true;
+      syncBtn.textContent = 'Syncing...';
+
+      try {
+        const res = await fetch(`${API_BASE_URL}/sync`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: currentData })
+        });
+        const result = await res.json();
+        
+        if (result.success) {
+          notification.className = 'p-4 rounded-lg text-sm font-medium bg-emerald-50 text-emerald-800 border border-emerald-200 block';
+          notification.textContent = `Successfully synced ${result.inserted_count} rows directly to Google Sheets!`;
+        } else {
+          throw new Error(result.error);
+        }
+      } catch (err) {
+        notification.className = 'p-4 rounded-lg text-sm font-medium bg-red-50 text-red-800 border border-red-200 block';
+        notification.textContent = 'Failed to sync: ' + err.message;
+      } finally {
+        syncBtn.disabled = false;
+        syncBtn.textContent = 'Push to Google Sheets';
+      }
+    });
+  </script>
+</body>
+</html>

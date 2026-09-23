@@ -14,14 +14,14 @@ load_dotenv()
 app = Flask(__name__)
 
 # Allow requests from your Netlify domain and local
-# CORS(app, resources={r"/*": {"origins": [
-#     "http://127.0.0.1:5000",
-#     "http://localhost:5000",
-#     "https://invoice-agent-ai.netlify.app"
-# ]}})
+ CORS(app, resources={r"/*": {"origins": [
+     "http://127.0.0.1:5000",
+     "http://localhost:5000",
+     "https://invoice-agent-ai.netlify.app"
+ ]}})
 
 # Temporarily allow all origins for debugging
-CORS(app, resources={r"/*": {"origins": "*"}})
+#CORS(app, resources={r"/*": {"origins": "*"}})
 
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 

@@ -3,7 +3,8 @@ import io
 import json
 import time
 from typing import List
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 import pymupdf
 from PIL import Image
 from pydantic import BaseModel
@@ -14,11 +15,17 @@ import gspread
 
 load_dotenv()
 
-# Serve index.html directly from the current directory
-app = Flask(__name__, template_folder=".")
+app = Flask(__name__)
+
+# Allow requests from your Netlify domain and local testing
+CORS(app, resources={r"/*": {"origins": [
+    "http://127.0.0.1:5000", 
+    "http://localhost:5000",
+    "https://yc-invoice-agent.netlify.app"
+]}})
+
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-# Pydantic Schemas
 class CatalogItem(BaseModel):
     category: str
     material_specification: str
@@ -63,10 +70,6 @@ def extract_from_images(images):
             else:
                 raise e
     raise RuntimeError("API busy after 5 retry attempts.")
-
-@app.route("/")
-def index():
-    return render_template("index.html")
 
 @app.route("/upload", methods=["POST"])
 def upload():
@@ -121,4 +124,5 @@ def sync_to_sheets():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    # Render requires binding to 0.0.0.0 for production
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

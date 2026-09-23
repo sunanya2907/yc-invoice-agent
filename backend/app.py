@@ -21,7 +21,7 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": [
     "http://127.0.0.1:5000", 
     "http://localhost:5000",
-    "https://yc-invoice-agent.netlify.app"
+    "https://invoice-agent-ai.netlify.app"
 ]}})
 
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))

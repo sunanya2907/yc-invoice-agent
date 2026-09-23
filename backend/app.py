@@ -126,3 +126,7 @@ def sync_to_sheets():
 if __name__ == "__main__":
     # Render requires binding to 0.0.0.0 for production
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    return "OK", 200

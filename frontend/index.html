@@ -9,17 +9,17 @@
 <body class="bg-white text-slate-900 min-h-screen font-sans selection:bg-indigo-100">
 
   <!-- ========================================== -->
-  <!-- 1. LANDING PAGE (Visible to logged-out users) -->
+  <!-- 1. LANDING PAGE -->
   <!-- ========================================== -->
   <div id="landing-page" class="min-h-screen flex flex-col">
     <!-- Navbar -->
     <header class="flex justify-between items-center py-6 px-8 max-w-7xl mx-auto w-full">
       <div class="text-xl font-bold tracking-tight text-slate-900">InvoiceAgent</div>
-      <button id="nav-login-btn" class="text-sm font-medium text-slate-600 hover:text-slate-900 transition">Login</button>
+      <a href="mailto:brightbridgeglobal2907@gmail.com?subject=Invoice%20Pilot%20Test" class="text-sm font-medium text-slate-600 hover:text-slate-900 transition">Contact Us</a>
     </header>
 
     <!-- Hero Section -->
-    <main class="flex-grow flex flex-col items-center justify-center px-4 text-center mt-12 mb-20">
+    <main class="flex-grow flex flex-col items-center justify-center px-4 text-center mt-12 mb-10">
       <div class="inline-block bg-blue-50 text-blue-600 text-xs font-bold px-3 py-1 rounded-full mb-8 tracking-wide">
         Currently onboarding local contractors
       </div>
@@ -29,9 +29,10 @@
       <p class="text-lg md:text-xl text-slate-500 max-w-2xl mb-10 leading-relaxed">
         Forward your messy PDF supplier emails to our AI agent. We extract every line item and perfectly reconcile it into your Google Sheets and accounting software.
       </p>
-      <button id="hero-cta-btn" class="bg-black text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-slate-800 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-        Get Early Access
-      </button>
+      
+      <a href="mailto:brightbridgeglobal2907@gmail.com?subject=Invoice%20Pilot%20Test" class="bg-black text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-slate-800 transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 inline-block">
+        Email Me A Test PDF
+      </a>
 
       <!-- Trust Banner -->
       <div class="mt-24 w-full border-t border-slate-100 pt-10">
@@ -44,7 +45,7 @@
       </div>
 
       <!-- Features Section -->
-      <div class="mt-32 max-w-6xl mx-auto px-4 pb-20">
+      <div class="mt-32 max-w-6xl mx-auto px-4 pb-10">
         <h2 class="text-3xl font-bold mb-16">Zero software to learn. It just works.</h2>
         <div class="grid md:grid-cols-3 gap-12 text-center">
           <!-- Step 1 -->
@@ -67,347 +68,27 @@
           </div>
         </div>
       </div>
+
+      <!-- ========================================== -->
+      <!-- NEW DIRECT EMAIL CTA SECTION -->
+      <!-- ========================================== -->
+      <div class="max-w-3xl mx-auto w-full mt-10 mb-20 px-4">
+        <div style="text-align: center; padding: 50px; background-color: #f8f9fa; border-radius: 20px; border: 1px solid #e2e8f0;">
+            <h2 class="text-2xl font-bold mb-3 text-slate-900">Want to see the AI in action?</h2>
+            <p class="text-slate-600 mb-8 text-lg">Send us a messy vendor invoice, and we will reply with a clean, formatted database in 5 minutes.</p>
+            
+            <a href="mailto:brightbridgeglobal2907@gmail.com?subject=Invoice%20Pilot%20Test" 
+               class="bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-emerald-700 transition shadow-md inline-block">
+               Email Me Your PDF
+            </a>
+        </div>
+      </div>
+
     </main>
     <footer class="text-center py-6 text-slate-400 text-sm border-t border-slate-100">
-      &copy; 2026 InvoiceAgent. Built for the YC W27 Batch.
+      © 2026 InvoiceAgent.
     </footer>
   </div>
 
-  <!-- ========================================== -->
-  <!-- 2. AUTHENTICATION SCREEN (Hidden by default)-->
-  <!-- ========================================== -->
-  <div id="auth-section" class="hidden min-h-screen bg-slate-50 items-center justify-center p-4">
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 border border-slate-100">
-      
-      <button id="back-to-home" class="text-sm text-slate-400 hover:text-slate-600 mb-6 flex items-center gap-1 transition">
-        &larr; Back
-      </button>
-
-      <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold text-slate-800">InvoiceAgent</h2>
-        <p class="text-slate-500 mt-2" id="auth-subtitle">Sign in to your workspace</p>
-      </div>
-
-      <form id="auth-form" class="space-y-5">
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
-          <input type="email" id="email-input" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 outline-none transition">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
-          <input type="password" id="password-input" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 outline-none transition">
-        </div>
-        <div id="auth-error" class="hidden text-red-600 text-sm font-medium bg-red-50 p-3 rounded-lg border border-red-100"></div>
-        <button type="submit" id="auth-submit-btn" class="w-full py-3 bg-black text-white rounded-lg font-semibold hover:bg-slate-800 transition shadow-md">
-          Sign In
-        </button>
-      </form>
-
-      <div class="mt-6 text-center text-sm text-slate-600">
-        <span id="auth-toggle-text">Don't have an account?</span> 
-        <button id="toggle-auth-mode" class="text-black font-semibold hover:underline">Sign Up</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- 3. MAIN DASHBOARD (Hidden until logged in) -->
-  <!-- ========================================== -->
-  <div id="app-section" class="hidden bg-slate-50 min-h-screen w-full pb-10">
-    <div class="max-w-6xl mx-auto py-10 px-4">
-      
-      <header class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-        <div>
-          <h1 class="text-2xl font-bold tracking-tight text-slate-800">InvoiceAgent Workspace</h1>
-          <p class="text-slate-500 text-sm mt-1">Logged in as: <span id="user-email-display" class="font-semibold text-slate-900"></span></p>
-        </div>
-        <button id="logout-btn" class="mt-4 md:mt-0 px-5 py-2.5 border border-slate-200 text-slate-600 rounded-lg font-medium hover:bg-slate-50 transition shadow-sm">
-          Sign Out
-        </button>
-      </header>
-
-      <!-- Upload Box -->
-      <div id="dropZone" class="border-2 border-dashed border-slate-300 rounded-2xl p-12 bg-white text-center cursor-pointer hover:border-slate-800 transition-colors shadow-sm">
-        <input type="file" id="fileInput" accept="application/pdf" class="hidden" />
-        <div class="flex flex-col items-center">
-          <svg class="w-12 h-12 text-slate-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-          </svg>
-          <p class="text-lg font-semibold text-slate-800">Drag and drop your PDF invoice here</p>
-          <p class="text-sm text-slate-500 mt-1 mb-6">We'll extract all line items automatically</p>
-          <button type="button" class="px-6 py-2.5 bg-slate-100 text-slate-800 rounded-lg font-semibold hover:bg-slate-200 transition">Browse Files</button>
-        </div>
-      </div>
-
-      <!-- Loading Spinner -->
-      <div id="loading" class="hidden my-8 p-8 bg-white rounded-2xl border border-slate-200 shadow-sm text-center">
-        <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-800 border-t-transparent mb-4"></div>
-        <p class="text-slate-800 font-semibold">Extracting structured records with AI...</p>
-        <p class="text-slate-500 text-sm mt-1">This usually takes about 5-10 seconds.</p>
-      </div>
-
-      <!-- Extracted Preview Section -->
-      <div id="resultsSection" class="hidden mt-8 space-y-6">
-        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-          <div class="flex gap-6 flex-wrap text-sm">
-            <div><span class="text-slate-400 block text-xs uppercase font-bold tracking-wider mb-1">Document</span> <strong id="metaTitle" class="text-slate-800 text-base"></strong></div>
-            <div class="border-l border-slate-200 pl-6"><span class="text-slate-400 block text-xs uppercase font-bold tracking-wider mb-1">Market</span> <strong id="metaMarket" class="text-slate-800 text-base"></strong></div>
-          </div>
-          <button id="syncBtn" class="w-full md:w-auto px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
-            Push to Google Sheets
-          </button>
-        </div>
-
-        <div id="notification" class="hidden p-4 rounded-xl text-sm font-medium shadow-sm"></div>
-
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-          <div class="overflow-x-auto max-h-[600px]">
-            <table class="w-full text-left text-sm whitespace-nowrap">
-              <thead class="bg-slate-50 text-slate-500 sticky top-0 border-b border-slate-200 uppercase text-xs tracking-wider font-bold">
-                <tr>
-                  <th class="py-4 px-6">Category</th>
-                  <th class="py-4 px-6">Material Specification</th>
-                  <th class="py-4 px-6">Indicative Price</th>
-                  <th class="py-4 px-6">Unit</th>
-                </tr>
-              </thead>
-              <tbody id="tableBody" class="divide-y divide-slate-100"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- 4. FIREBASE & APP LOGIC -->
-  <!-- ========================================== -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-
-    // TODO: REPLACE THIS WITH YOUR ACTUAL FIREBASE CONFIG
-    const firebaseConfig = {
-      apiKey: "AIzaSyD3uQr7i229jbZsAxmrzAkYm-kwUmTSgUE",
-      authDomain: "yc-invoice-agent-b5639.firebaseapp.com",
-      projectId: "yc-invoice-agent-b5639",
-      storageBucket: "yc-invoice-agent-b5639.firebasestorage.app",
-      messagingSenderId: "1070964751443",
-      appId: "1:1070964751443:web:7d00ed63af3ffac09adaa6"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // DOM Elements - Sections
-    const landingPage = document.getElementById('landing-page');
-    const authSection = document.getElementById('auth-section');
-    const appSection = document.getElementById('app-section');
-
-    // DOM Elements - Navigation & Auth UI
-    const navLoginBtn = document.getElementById('nav-login-btn');
-    const heroCtaBtn = document.getElementById('hero-cta-btn');
-    const backToHome = document.getElementById('back-to-home');
-    const authForm = document.getElementById('auth-form');
-    const toggleAuthMode = document.getElementById('toggle-auth-mode');
-    const authSubmitBtn = document.getElementById('auth-submit-btn');
-    const authSubtitle = document.getElementById('auth-subtitle');
-    const authToggleText = document.getElementById('auth-toggle-text');
-    const authError = document.getElementById('auth-error');
-    const emailInput = document.getElementById('email-input');
-    const passwordInput = document.getElementById('password-input');
-    const userEmailDisplay = document.getElementById('user-email-display');
-    const logoutBtn = document.getElementById('logout-btn');
-
-    // DOM Elements - App UI
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('fileInput');
-    const loading = document.getElementById('loading');
-    const resultsSection = document.getElementById('resultsSection');
-    const tableBody = document.getElementById('tableBody');
-    const syncBtn = document.getElementById('syncBtn');
-    const notification = document.getElementById('notification');
-
-    let isLoginMode = true;
-    let currentUser = null;
-    let currentData = null;
-
-    // View Routing Functions
-    function showLanding() {
-      landingPage.classList.remove('hidden');
-      authSection.classList.add('hidden');
-      appSection.classList.add('hidden');
-      authSection.classList.remove('flex'); // Remove flex when hidden
-    }
-
-    function showAuth() {
-      landingPage.classList.add('hidden');
-      authSection.classList.remove('hidden');
-      authSection.classList.add('flex'); // Add flex for centering
-      appSection.classList.add('hidden');
-    }
-
-    function showApp() {
-      landingPage.classList.add('hidden');
-      authSection.classList.add('hidden');
-      authSection.classList.remove('flex');
-      appSection.classList.remove('hidden');
-    }
-
-    // Event Listeners for Routing
-    navLoginBtn.addEventListener('click', showAuth);
-    heroCtaBtn.addEventListener('click', () => {
-      // Switch to signup mode automatically when clicking CTA
-      if (isLoginMode) toggleAuthMode.click();
-      showAuth();
-    });
-    backToHome.addEventListener('click', showLanding);
-
-    // Listen for Auth State Changes
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        currentUser = user;
-        userEmailDisplay.textContent = user.email;
-        showApp();
-      } else {
-        currentUser = null;
-        showLanding();
-      }
-    });
-
-    // Toggle Login/Signup UI
-    toggleAuthMode.addEventListener('click', () => {
-      isLoginMode = !isLoginMode;
-      authError.classList.add('hidden');
-      if (isLoginMode) {
-        authSubmitBtn.textContent = 'Sign In';
-        authSubtitle.textContent = 'Sign in to your workspace';
-        authToggleText.textContent = "Don't have an account?";
-        toggleAuthMode.textContent = 'Sign Up';
-      } else {
-        authSubmitBtn.textContent = 'Create Account';
-        authSubtitle.textContent = 'Register for a new workspace';
-        authToggleText.textContent = "Already have an account?";
-        toggleAuthMode.textContent = 'Sign In';
-      }
-    });
-
-    // Handle Form Submit
-    authForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      authError.classList.add('hidden');
-      authSubmitBtn.disabled = true;
-      authSubmitBtn.textContent = 'Processing...';
-
-      const email = emailInput.value;
-      const password = passwordInput.value;
-
-      try {
-        if (isLoginMode) {
-          await signInWithEmailAndPassword(auth, email, password);
-        } else {
-          await createUserWithEmailAndPassword(auth, email, password);
-        }
-      } catch (error) {
-        authError.textContent = error.message.replace('Firebase: ', '');
-        authError.classList.remove('hidden');
-      } finally {
-        authSubmitBtn.disabled = false;
-        authSubmitBtn.textContent = isLoginMode ? 'Sign In' : 'Create Account';
-      }
-    });
-
-    logoutBtn.addEventListener('click', () => signOut(auth));
-
-    // ==========================================
-    // APP LOGIC (Upload & Sync)
-    // ==========================================
-    
-    const API_BASE_URL = 'https://yc-invoice-agent.onrender.com'; 
-
-    dropZone.addEventListener('click', () => fileInput.click());
-    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-slate-800', 'bg-slate-50'); });
-    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-slate-800', 'bg-slate-50'));
-    dropZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropZone.classList.remove('border-slate-800', 'bg-slate-50');
-      if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
-    });
-    fileInput.addEventListener('change', () => {
-      if (fileInput.files.length) handleFile(fileInput.files[0]);
-    });
-
-    async function handleFile(file) {
-      if (file.type !== 'application/pdf') return alert('Please upload a PDF file.');
-      
-      const formData = new FormData();
-      formData.append('file', file);
-
-      loading.classList.remove('hidden');
-      resultsSection.classList.add('hidden');
-      notification.classList.add('hidden');
-
-      try {
-        const res = await fetch(`${API_BASE_URL}/upload`, { method: 'POST', body: formData });
-        const result = await res.json();
-
-        if (!result.success) throw new Error(result.error || 'Extraction failed');
-        
-        currentData = result.data;
-        renderResults(currentData);
-      } catch (err) {
-        alert('Error connecting to backend API: ' + err.message);
-      } finally {
-        loading.classList.add('hidden');
-      }
-    }
-
-    function renderResults(data) {
-      document.getElementById('metaTitle').textContent = data.document_title || '-';
-      document.getElementById('metaMarket').textContent = data.primary_reference_market || '-';
-      
-      tableBody.innerHTML = '';
-      data.items.forEach(item => {
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-50 transition-colors';
-        tr.innerHTML = `
-          <td class="py-4 px-6 font-medium text-slate-700">${item.category || ''}</td>
-          <td class="py-4 px-6 text-slate-900">${item.material_specification || ''}</td>
-          <td class="py-4 px-6 font-mono font-semibold text-slate-800">${item.indicative_price || ''}</td>
-          <td class="py-4 px-6 text-slate-500">${item.unit || ''}</td>
-        `;
-        tableBody.appendChild(tr);
-      });
-      resultsSection.classList.remove('hidden');
-    }
-
-    syncBtn.addEventListener('click', async () => {
-      if (!currentData) return;
-      syncBtn.disabled = true;
-      syncBtn.textContent = 'Syncing...';
-
-      try {
-        const res = await fetch(`${API_BASE_URL}/sync`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ data: currentData })
-        });
-        const result = await res.json();
-        
-        if (result.success) {
-          notification.className = 'p-4 rounded-xl text-sm font-medium bg-emerald-50 text-emerald-800 border border-emerald-200 block';
-          notification.textContent = `Successfully synced ${result.inserted_count} rows directly to Google Sheets!`;
-        } else {
-          throw new Error(result.error);
-        }
-      } catch (err) {
-        notification.className = 'p-4 rounded-xl text-sm font-medium bg-red-50 text-red-800 border border-red-200 block';
-        notification.textContent = 'Failed to sync: ' + err.message;
-      } finally {
-        syncBtn.disabled = false;
-        syncBtn.textContent = 'Push to Google Sheets';
-      }
-    });
-  </script>
 </body>
 </html>
